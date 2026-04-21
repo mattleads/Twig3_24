@@ -97,9 +97,3 @@ php bin/console app:verify-twig
      }'
    ```
 
-### Functional Tests
-Run the PHPUnit suite to verify the Controller's payload handling and HTML rendering:
-```bash
-php bin/phpunit
-```
-
