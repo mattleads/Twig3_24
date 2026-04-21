@@ -1,0 +1,60 @@
+{# templates/ui/components/preview.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Component Preview</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; background: #f9fafb; color: #111827; }
+        h1 { font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; }
+        p { margin-bottom: 1rem; color: #4b5563; }
+        
+        .container { background: #ffffff; border: 1px solid #e5e7eb; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .success-banner { background-color: #d1fae5; border-left: 4px solid #10b981; color: #065f46; padding: 1rem; margin-bottom: 1.5rem; border-radius: 0.25rem; }
+        
+        /* Simulated Tailwind classes used by the component */
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1rem; border-radius: 0.375rem; cursor: pointer; transition: all 0.2s; font-weight: 600; font-size: 1rem; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: #3b82f6; color: white; border: 1px solid transparent; }
+        .btn-primary:hover:not(:disabled) { background: #2563eb; }
+        .btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+        .btn-secondary:hover:not(:disabled) { background: #e5e7eb; }
+        
+        .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .border-gray-200 { border-color: #e5e7eb; }
+        
+        .animate-spin { display: inline-block; animation: spin 1s linear infinite; margin-right: 0.5rem; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .reset-link { display: inline-block; margin-top: 1.5rem; color: #3b82f6; text-decoration: none; font-size: 0.875rem; }
+        .reset-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Twig 3.24 Component State Preview</h1>
+    <p>This page demonstrates how the Twig 3.24 <code>html_attr()</code> function merges attributes, and how strictly-typed DTOs control component state seamlessly.</p>
+    
+    <div class="container">
+        <form method="GET" action="{{ path('ui_preview_button_get') }}">
+            {% if is_submitted|default(false) %}
+                <div class="success-banner">
+                    <strong>State Updated!</strong> Notice how the Twig template automatically applied the <code>disabled</code> attribute, added the spinning icon via the DTO's <code>loading</code> state, and shifted the theme to <code>btn-secondary</code>.
+                </div>
+            {% else %}
+                <input type="hidden" name="submit" value="1">
+                <p>Click the button below to submit the form and see the state change.</p>
+            {% endif %}
+
+            {% include 'ui/components/_button.html.twig' with {
+                'payload': payload,
+                'button_type': 'submit',
+                'button_label': is_submitted|default(false) ? 'Processing...' : 'Submit Order'
+            } %}
+            
+            {% if is_submitted|default(false) %}
+                <br>
+                <a class="reset-link" href="{{ path('ui_preview_button_get') }}">Reset Demo</a>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>

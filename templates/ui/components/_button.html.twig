@@ -1,0 +1,48 @@
+{# templates/ui/components/_button.html.twig #}
+{# @var payload \App\DTO\UI\ButtonComponentDto #}
+
+{# 1. Define base component attributes #}
+{% set base_attrs = {
+    class: ['btn', 'btn-lg', 'transition-all', 'font-semibold'],
+    type: button_type|default('button'),
+    'data-controller': 'ui-button'
+} %}
+
+{# 2. Define variant attributes mapping directly from our DTO #}
+{% set variant_attrs = {
+    class: payload.type == 'primary' ? ['btn-primary', 'shadow-md'] : ['btn-secondary', 'border-gray-200'],
+    disabled: payload.state.disabled,
+    'data-analytics-id': payload.meta.analyticsId,
+    'aria-label': payload.meta.ariaLabel
+} %}
+
+{# 3. Framework attributes for Section 4 (relaxed escaping) #}
+{% set framework_attrs = {
+    '@click': 'submitForm',
+    ':disabled': 'isSubmitting',
+    'x-data': '{ open: false }'
+} %}
+
+{# 4. Destructuring and Renaming (Section 5) #}
+{% set payloadHash = payload|cast_to_array %}
+{% do {type: btnType, state: btnState} = payloadHash %}
+
+{# 5. Null-Safe Short-Circuiting (Section 6) #}
+{% set contrast_attrs = {
+    class: [payload.theme?.accessibility.highContrastClass ?? 'default-contrast']
+} %}
+
+{#
+   Note: Twig 3.24.0's html_attr function uses the 'html_attr_relaxed' strategy internally
+   for attribute names, so manual piping to |e('html_attr_relaxed') is not needed here.
+#}
+<button {{ html_attr(base_attrs, variant_attrs, framework_attrs, contrast_attrs) }}>
+    {% if btnState.loading %}
+        <span class="animate-spin">🌀</span>
+    {% endif %}
+    <slot>{{ button_label|default('Click Here') }}</slot>
+</button>
+
+{% if btnState.loading %}
+    <p>Processing {{ btnType }} action...</p>
+{% endif %}
